@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build",
+        "type": "shell",
+        "command": "west",
+        "args": [
+          "build",
+          "-b",
+          "nucleo_h723zg",
+          "--",
+          "-DDTC_OVERLAY_FILE=/Users/olaoren/01_code/zephyrproject/projects/gorochu/src/dts/stm32h723zg_ds18b20.overlay",
+          "-DCONF_FILE=/Users/olaoren/01_code/zephyrproject/projects/gorochu/prj.conf"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": ["$gcc"]
+      },
+      {
+        "label": "killOpenOCD",
+        "type": "shell",
+        "command": "pkill",
+        "args": ["openocd"],
+        "problemMatcher": []
+      }
+    ]
+  }
+  

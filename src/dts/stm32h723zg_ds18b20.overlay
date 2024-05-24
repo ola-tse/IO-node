@@ -1,0 +1,52 @@
+/ {
+    aliases {
+        ethernet0 = &mac;
+    };
+
+    chosen {
+        zephyr,net = &mac;
+    };
+};
+
+&mac {
+    status = "okay";
+    local-mac-address = [C0 FF EE C0 FF EE];
+};
+
+&arduino_serial {
+    pinctrl-0 = <&uart8_tx_pe1>; // &uart8_rx_pe0 n     -      <&uart8_tx_pe1>;
+    single-wire;
+    pinctrl-names = "default";
+	status = "okay";
+
+	w1_0: w1-zephyr-serial-0 {
+		compatible = "zephyr,w1-serial";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		temp_sens_ds18b20: ds18b20 {
+			compatible = "maxim,ds18b20";
+			family-code = <0x28>;
+			resolution = <12>;
+			status = "okay";
+            label = "temp_sens_ds18b20_";
+		};
+	};
+};
+
+&uart8_tx_pe1 {
+    pinmux = <0x828>;
+    bias-pull-up;
+    drive-open-drain; 
+    //phandle = <0x9>;
+};
+
+// Pin control for USART1 configured for single-wire
+//&pinctrl {
+//    usart1_single_wire: usart1_single_wire {
+//        pinmux = <STM32_PINMUX('B', 9, AF7)>;
+//        drive-open-drain;
+//        bias-pull-up;
+//    };
+//};

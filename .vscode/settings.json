@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "printk.h": "c",
+        "gpio.h": "c",
+        "mqtt_client.h": "c",
+        "log.h": "c"
+    }
+}
