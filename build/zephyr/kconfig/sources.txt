@@ -14,8 +14,8 @@
 /Users/olaoren/01_code/zephyrproject/modules/hal/telink/tlsr9/ble/vendor/controller/Kconfig
 /Users/olaoren/01_code/zephyrproject/modules/lib/gui/lvgl/Kconfig
 /Users/olaoren/01_code/zephyrproject/modules/lib/picolibc/zephyr/Kconfig
-/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/Kconfig/Kconfig.dts
-/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/Kconfig/Kconfig.modules
+/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/Kconfig/Kconfig.dts
+/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/Kconfig/Kconfig.modules
 /Users/olaoren/01_code/zephyrproject/zephyr/Kconfig
 /Users/olaoren/01_code/zephyrproject/zephyr/Kconfig.zephyr
 /Users/olaoren/01_code/zephyrproject/zephyr/arch/Kconfig

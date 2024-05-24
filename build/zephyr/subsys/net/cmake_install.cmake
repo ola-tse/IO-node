@@ -39,10 +39,10 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/zephyr/subsys/net/l2/cmake_install.cmake")
-  include("/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/zephyr/subsys/net/pkt_filter/cmake_install.cmake")
-  include("/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/zephyr/subsys/net/ip/cmake_install.cmake")
-  include("/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/zephyr/subsys/net/lib/cmake_install.cmake")
+  include("/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/zephyr/subsys/net/l2/cmake_install.cmake")
+  include("/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/zephyr/subsys/net/pkt_filter/cmake_install.cmake")
+  include("/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/zephyr/subsys/net/ip/cmake_install.cmake")
+  include("/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/zephyr/subsys/net/lib/cmake_install.cmake")
 
 endif()
 

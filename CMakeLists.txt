@@ -6,4 +6,7 @@ project(IO-node)
 target_sources(app PRIVATE 
     src/main.c
     src/sensors/ds18b20.c
-    src/network/general.c)
+    src/network/general.c
+    src/DO/DO.c
+    src/network/mqtt_client.c
+    src/common/variables.c)

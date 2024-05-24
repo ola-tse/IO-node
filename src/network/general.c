@@ -19,3 +19,21 @@ void store_mac_address(void) {
 
     LOG_INF("Stored MAC address: %s", stored_mac_address);
 }
+
+void dhcp_handler(struct net_mgmt_event_callback *cb, uint32_t mgmt_event, struct net_if *iface) {
+    if (mgmt_event == NET_EVENT_IPV4_ADDR_ADD) {
+        struct net_if_addr *ifaddr;
+        char buf[NET_IPV4_ADDR_LEN];
+
+        ifaddr = net_if_ipv4_addr_lookup(&iface->config.ip.ipv4->unicast[0].address.in_addr, &iface);
+        if (ifaddr) {
+            net_addr_ntop(AF_INET, &ifaddr->address.in_addr, buf, sizeof(buf));
+            int a = 0;
+            LOG_INF("obtained IP address: %s", buf);
+            printk("obtained IP address: %s", buf);
+        } else {
+            LOG_ERR("Failed to get DHCP address");
+            printk("Failed to get DHCP address");
+        }
+    }
+}

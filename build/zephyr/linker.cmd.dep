@@ -1,6 +1,6 @@
 linker.cmd: \
  /Users/olaoren/01_code/zephyrproject/zephyr/include/zephyr/arch/arm/cortex_m/scripts/linker.ld \
- /Users/olaoren/01_code/zephyrproject/projects/gorochu/build/zephyr/include/generated/autoconf.h \
+ /Users/olaoren/01_code/zephyrproject/projects/IO-node/build/zephyr/include/generated/autoconf.h \
  /Users/olaoren/01_code/zephyrproject/zephyr/include/zephyr/linker/sections.h \
  /Users/olaoren/01_code/zephyrproject/zephyr/include/zephyr/linker/section_tags.h \
  /Users/olaoren/01_code/zephyrproject/zephyr/include/zephyr/toolchain.h \

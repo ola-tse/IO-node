@@ -7,5 +7,6 @@
 extern char stored_mac_address[18];
 
 void store_mac_address(void);
+void dhcp_handler(struct net_mgmt_event_callback *cb, uint32_t mgmt_event, struct net_if *iface);
 
 #endif // NET_GENERAL_H

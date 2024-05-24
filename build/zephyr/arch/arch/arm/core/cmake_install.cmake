@@ -39,8 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/zephyr/arch/arch/arm/core/cortex_m/cmake_install.cmake")
-  include("/Users/olaoren/01_code/zephyrproject/projects/gorochu/build/zephyr/arch/arch/arm/core/mpu/cmake_install.cmake")
+  include("/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/zephyr/arch/arch/arm/core/cortex_m/cmake_install.cmake")
+  include("/Users/olaoren/01_code/zephyrproject/projects/IO-node/build/zephyr/arch/arch/arm/core/mpu/cmake_install.cmake")
 
 endif()
 

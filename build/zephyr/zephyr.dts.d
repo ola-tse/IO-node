@@ -37,4 +37,4 @@ empty_file.o: \
  /Users/olaoren/01_code/zephyrproject/zephyr/include/zephyr/dt-bindings/pinctrl/stm32-pinctrl-common.h \
  /Users/olaoren/01_code/zephyrproject/zephyr/boards/arm/nucleo_h723zg/arduino_r3_connector.dtsi \
  /Users/olaoren/01_code/zephyrproject/zephyr/include/zephyr/dt-bindings/input/input-event-codes.h \
- /Users/olaoren/01_code/zephyrproject/projects/gorochu/src/dts/stm32h723zg_ds18b20.overlay
+ /Users/olaoren/01_code/zephyrproject/projects/IO-node/src/dts/stm32h723zg_ds18b20.overlay

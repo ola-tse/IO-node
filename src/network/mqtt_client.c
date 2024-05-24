@@ -5,17 +5,37 @@ uint8_t tx_buffer[TX_BUFFER_SIZE];
 
 struct mqtt_client client;
 struct sockaddr_storage broker;
-struct mqtt_utf8 client_id = MQTT_UTF8_LITERAL(MQTT_CLIENT_ID);
-struct mqtt_utf8 user_name = MQTT_UTF8_LITERAL(MQTT_USERNAME);
-struct mqtt_utf8 password = MQTT_UTF8_LITERAL(MQTT_PASSWORD);
+
+struct mqtt_utf8 client_id = {
+    .utf8 = MQTT_CLIENT_ID,
+    .size = strlen(MQTT_CLIENT_ID)
+};
+
+struct mqtt_utf8 user_name = {
+    .utf8 = MQTT_USERNAME,
+    .size = strlen(MQTT_USERNAME)
+};
+
+struct mqtt_utf8 password = {
+    .utf8 = MQTT_PASSWORD,
+    .size = strlen(MQTT_PASSWORD)
+};
+
+bool mqtt_connected = false;
 
 void mqtt_event_handler(struct mqtt_client *client, const struct mqtt_evt *evt) {
     switch (evt->type) {
         case MQTT_EVT_CONNACK:
-            printk("MQTT connected!\n");
+            if (evt->result == 0) {
+                printk("MQTT connected!\n");
+                mqtt_connected = true;
+            } else {
+                printk("MQTT connect failed: %d\n", evt->result);
+            }
             break;
         case MQTT_EVT_DISCONNECT:
-            printk("MQTT disconnected!\n");
+            printk("MQTT disconnected: %d\n", evt->result);
+            mqtt_connected = false;
             break;
         default:
             break;
@@ -33,9 +53,9 @@ void mqtt_init(void) {
 
     client.broker = &broker;
     client.evt_cb = mqtt_event_handler;
-    client.client_id = &client_id;
-    client.user_name = &user_name;
-    client.password = &password;
+    client.client_id = client_id;
+    //client.user_name = &user_name;
+    //client.password = &password;
     client.protocol_version = MQTT_VERSION_3_1_1;
 
     client.rx_buf = rx_buffer;
