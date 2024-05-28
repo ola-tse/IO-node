@@ -9,4 +9,5 @@ target_sources(app PRIVATE
     src/network/general.c
     src/DO/DO.c
     src/network/mqtt_client.c
+    src/network/mqtt_handlers.c
     src/common/variables.c)

@@ -2,12 +2,25 @@
     "version": "0.2.0",
     "configurations": [
       {
+        "name": "Debug with ST-Link",
+        "cwd": "${workspaceFolder}",
+        "executable": "${workspaceFolder}/build/zephyr/zephyr.elf",
+        "request": "launch",
+        "type": "cortex-debug",
+        //"armToolchainPath": "/Users/olaoren/zephyr-sdk-0.16.5-1/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+        "gdbPath": "/Users/olaoren/zephyr-sdk-0.16.5-1/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+        "runToEntryPoint": "main",
+        "showDevDebugOutput": "none",
+        "preLaunchTask": "build4debug-and-flash",
+        "servertype": "stlink"
+      },
+      {
         "name": "Debug (OpenOCD)",
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceFolder}/build/zephyr/zephyr.elf",
         "args": [],
-        "stopAtEntry": true,
+        "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
         "environment": [],
         "externalConsole": false,
@@ -19,19 +32,20 @@
             "ignoreFailures": true
           }
         ],
-        "miDebuggerPath": "arm-none-eabi-gdb",
+        "miDebuggerPath": "/Users/olaoren/zephyr-sdk-0.16.5-1/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
         "miDebuggerServerAddress": "localhost:3333",
-        "debugServerPath": "openocd",
+        "debugServerPath": "/opt/homebrew/bin/openocd",
         "debugServerArgs": "-f interface/stlink.cfg -f target/stm32h7x.cfg",
         "serverStarted": "Info : Listening on port 3333 for gdb connections",
         "filterStdout": true,
         "filterStderr": false,
-        "preLaunchTask": "build",
+        "preLaunchTask": "build4debug-and-flash",
         "postDebugTask": "killOpenOCD",
         "logging": {
-          "engineLogging": true
+          "engineLogging": true,
+          "trace": true,
+          "traceResponse": true
         }
       }
     ]
   }
-  

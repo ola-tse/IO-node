@@ -1,31 +1,89 @@
 {
-    "version": "2.0.0",
-    "tasks": [
+  "version": "2.0.0",
+  "tasks": [
       {
-        "label": "build",
+          "label": "build",
+          "type": "shell",
+          "command": "west",
+          "args": [
+              "build",
+              "-b",
+              "nucleo_h723zg",
+              "--",
+              "-DDTC_OVERLAY_FILE=/Users/olaoren/01_code/zephyrproject/projects/IO-node/src/dts/stm32h723zg_ds18b20.overlay",
+              "-DCONF_FILE=/Users/olaoren/01_code/zephyrproject/projects/IO-node/prj.conf"
+          ],
+          "group": {
+              "kind": "build",
+              "isDefault": true
+          },
+          "problemMatcher": ["$gcc"]
+      },
+      {
+          "label": "clean",
+          "type": "shell",
+          "command": "west",
+          "args": [
+              "build",
+              "-t",
+              "clean"
+          ],
+          "group": {
+              "kind": "build",
+              "isDefault": false
+          },
+          "problemMatcher": []
+      },
+      {
+          "label": "build-debug",
+          "type": "shell",
+          "command":"west",
+          "args": [
+              "build",
+              "-b",
+              "nucleo_h723zg",
+              "--",
+              "-DCMAKE_BUILD_TYPE=Debug",
+              "-DDTC_OVERLAY_FILE=/Users/olaoren/01_code/zephyrproject/projects/IO-node/src/dts/stm32h723zg_ds18b20.overlay",
+              "-DCONF_FILE=/Users/olaoren/01_code/zephyrproject/projects/IO-node/prj.conf"
+          ],
+          "group": {
+              "kind": "build",
+              "isDefault": false
+          },
+          "dependsOn": ["flash"],
+          "problemMatcher": ["$gcc"]
+      },
+      {
+          "label": "killOpenOCD",
+          "type": "shell",
+          "command": "pkill",
+          "args": ["openocd"],
+          "problemMatcher": [],
+          "presentation": {
+              "echo": true,
+              "reveal": "always",
+              "focus": false,
+              "panel": "shared",
+              "showReuseMessage": true,
+              "clear": false
+          }
+      },
+      {
+        "label": "flash4debug",
         "type": "shell",
         "command": "west",
         "args": [
-          "build",
-          "-b",
-          "nucleo_h723zg",
-          "--",
-          "-DDTC_OVERLAY_FILE=/Users/olaoren/01_code/zephyrproject/projects/gorochu/src/dts/stm32h723zg_ds18b20.overlay",
-          "-DCONF_FILE=/Users/olaoren/01_code/zephyrproject/projects/gorochu/prj.conf"
+          "flash"
         ],
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": ["$gcc"]
+        "dependsOn": ["build-debug"],
+        "problemMatcher": []
       },
       {
-        "label": "killOpenOCD",
+        "label": "build4debug-and-flash",
         "type": "shell",
-        "command": "pkill",
-        "args": ["openocd"],
+        "dependsOn": ["flash4debug"],
         "problemMatcher": []
-      }
-    ]
-  }
-  
+      },
+  ]
+}

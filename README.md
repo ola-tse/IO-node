@@ -2,6 +2,8 @@ build cmd:
 
 west build -b nucleo_h723zg -- -DDTC_OVERLAY_FILE="/Users/olaoren/01_code/zephyrproject/projects/IO-node/src/dts/stm32h723zg_ds18b20.overlay" -DCONF_FILE=prj.conf
 
+minicom -D /dev/tty.usbmodem11103 -b 115200
+
 
 #DO 
 

@@ -1,1 +1,3 @@
-/build
+./build
+./build/*
+./test/mqtt_broker/mosquitto/log/mosquitto.log
