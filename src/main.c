@@ -4,28 +4,14 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/net/net_if.h>
-
 #include <zephyr/net/socket.h>
 #include <zephyr/net/net_ip.h>
-
 #include <zephyr/net/net_mgmt.h>
 #include <zephyr/logging/log.h>
 
-
 #include "sensors/ds18b20.h"
-//#include "network/mqtt_client.h"
-#include "network/mqtt_handlers.h"
+#include "network/mqtt_client.h"
 #include "network/general.h"
-#include "DO/DO.h"
-
-// tmp START
-#include <zephyr/net/mqtt.h>
-#define MQTT_BROKER_ADDR "192.168.80.115" 
-#define MQTT_BROKER_PORT 1883
-#define MAX_RETRY_ATTEMPTS 5
-
-//tmp END
-
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
@@ -38,6 +24,8 @@ static const struct gpio_dt_spec led2 = GPIO_DT_SPEC_GET(LED2_NODE, gpios);
 static void wait_for_network_ready(void)
 {
     struct net_if *iface = net_if_get_default();
+    char addr_str[NET_IPV4_ADDR_LEN];
+    
     while (!net_if_is_up(iface)) {
         k_sleep(K_MSEC(100));
     }
@@ -46,25 +34,19 @@ static void wait_for_network_ready(void)
     while (!cfg->ip.ipv4->unicast[0].address.family) {
         k_sleep(K_MSEC(100));
     }
-}
-/*
-static int connect_to_mqtt_broker(void)
-{
-    int rc, attempts = 0;
 
-    while (attempts < MAX_RETRY_ATTEMPTS) {
-        rc = mqtt_connect_broker();
-        if (rc == 0) {
-            return 0;
+    while (true) {
+        if (cfg->ip.ipv4 && cfg->ip.ipv4->unicast[0].address.family == AF_INET) {
+            net_addr_ntop(AF_INET, &cfg->ip.ipv4->unicast[0].address.in_addr, addr_str, sizeof(addr_str));
+            if (strcmp(addr_str, STM32_IPADDR) == 0) {
+                LOG_INF("Obtained target IP address: %s", addr_str);
+                break;
+            }
         }
-        LOG_ERR("Failed to connect to MQTT broker: %d, attempt %d", rc, attempts + 1);
-        attempts++;
-        k_sleep(K_SECONDS(5));
+        k_sleep(K_MSEC(100));
     }
-
-    return -1;
 }
-*/ 
+
 int main(void) {
     store_mac_address();
 
@@ -81,69 +63,29 @@ int main(void) {
         return -1;
     }
 
-    struct net_if *iface = net_if_get_default();
-    struct net_mgmt_event_callback cb;
-
-    net_mgmt_init_event_callback(&cb, dhcp_handler, NET_EVENT_IPV4_ADDR_ADD);
-    net_mgmt_add_event_callback(&cb);
-
-    net_dhcpv4_start(iface);
-    
+    net_dhcpv4_start(net_if_get_default());
     wait_for_network_ready();
 
     LOG_INF("Network is ready");
 
-    
-    if (!iface) {
-        LOG_ERR("No default network interface found.");
-        return;
+    my_mqtt_client_init();
+    if (mqtt_connect_to_broker() != 0) {
+        LOG_ERR("Could not establish connection to MQTT broker");
+        return -1;
     }
-
-    struct net_if_config *cfg = net_if_get_config(iface);
-    if (!cfg) {
-        LOG_ERR("Failed to get network interface configuration.");
-        return;
-    }
-
-    char buf[NET_IPV4_ADDR_LEN];
-    LOG_INF("Interface is %s", net_if_is_up(iface) ? "up" : "down");
-    LOG_INF("IPv4 Address: %s", net_addr_ntop(AF_INET, &cfg->ip.ipv4->unicast[0].address.in_addr, buf, sizeof(buf)));
-
-    // Initialize MQTT
-    // mqtt_init();
-    // int rc = 0;
-    // Connect to MQTT broker
-    // rc = mqtt_connect_broker();
-    // if (rc != 0) {
-    //     LOG_ERR("Failed to connect to MQTT broker: %d", rc);
-    // } else {
-    //     LOG_INF("Did not fail to connect to MQTT broker: %d", rc);
-    // }
-
-    // if (connect_to_mqtt_broker() != 0) {
-    //     LOG_ERR("Could not establish connection to MQTT broker");
-    //     return -1;
-    // }
-
-    // Wait for connection to be established
-    k_sleep(K_MSEC(2000));
-
-    // Publish a test message
-    // rc = mqtt_publish_message("test/topic", "Hello, Zephyr!");
-    // if (rc != 0) {
-    //     LOG_ERR("Failed to publish message: %d", rc);
-    // } else {
-    //     LOG_INF("Message published successfully");
-    // }
 
     while (1) {
-        start_app();
+        char payload[32];
+        
+        int rc;
         struct sensor_value temp;
-        do_1_target++;
-        LOG_INF("do target: %d", do_1_target);
         int sample_ok = sensor_sample_fetch(dev);
         int channel_ok = sensor_channel_get(dev, SENSOR_CHAN_AMBIENT_TEMP, &temp);
-
+        
+    
+        snprintf(payload, sizeof(payload), "%d.%06d", temp.val1, abs(temp.val2));
+        printk("Temperature is: %d.%06d\n", temp.val1, abs(temp.val2));
+        
         if (sample_ok == 0 && channel_ok == 0) {
             printk("Temperature is: %d.%06d\n", temp.val1, temp.val2);
         } else {
@@ -151,18 +93,25 @@ int main(void) {
         }
 
         gpio_pin_toggle_dt(temp.val1 != 0 ? &led0 : &led2);
-        k_sleep(K_MSEC(4000));
+        k_sleep(K_MSEC(1000));
 
-    //  rc = mqtt_publish_message("test/topic", "Hello, Zephyr!");
-    //     if (rc != 0) {
-    //         LOG_ERR("Failed to publish message: %d", rc);
-    //     } else {
-    //         LOG_INF("Message published successfully");
-    // }
-        k_yield();
+        if (connected2broker) {
+            rc = process_mqtt_and_sleep(1000);
+            if (rc != 0) {
+                LOG_ERR("Error in process_mqtt_and_sleep: %d", rc);
+                break;
+            }
+            snprintf(payload, sizeof(payload), "%d.%06d", temp.val1, abs(temp.val2));
+            printk("Temperature is: %d.%06d\n", temp.val1, abs(temp.val2));
+            rc = mqtt_publish_message("sensors/temperature", payload);
+            if (rc != 0) {
+                LOG_ERR("Failed to publish message: %d", rc);
+            }
+
+            k_sleep(K_SECONDS(1));
+        }
     }
 
+    mqtt_disconnect_from_broker();
     return 0;
 }
-
-

@@ -4,6 +4,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/net/net_if.h>
 
+#define STM32_IPADDR "192.168.80.132"
+
 extern char stored_mac_address[18];
 
 void store_mac_address(void);

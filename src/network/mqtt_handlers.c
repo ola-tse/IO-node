@@ -184,7 +184,7 @@ void mqtt_evt_handler(struct mqtt_client *const client,
 		}
 
 		LOG_ERR("PUBREC packet id: %u", evt->param.pubrec.message_id);
-        LOG_ERR("PUBREC packet data: %u", evt->param.publish.message.payload.data);
+        //LOG_ERR("PUBREC packet data: %s", evt->param.publish.message.payload.data);
 
 		const struct mqtt_pubrel_param rel_param = {
 			.message_id = evt->param.pubrec.message_id
